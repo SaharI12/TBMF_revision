@@ -1,0 +1,83 @@
+# Inference Configuration for MRI Parameter Mapping
+
+# Model Selection
+model_type: "model2"  # Options: "model1", "model2"
+
+# Model 1 Settings
+model1:
+  checkpoint: "model_checkpoints/model1/not_segmented.pt"
+  dataset_path: "phantoms_clean/model1/scan12"
+
+# Model 2 Settings
+model2:
+  parameter_type: "pH_mM"  # Options: "pH_mM", "T1_T2", "ksw_fs", "B0_B1"
+
+  # Checkpoints for each parameter type
+  checkpoints:
+    pH_mM: "model_checkpoints/model2/model2_pH_mM.pt"
+    T1_T2: "model_checkpoints/model2/model2_T1_T2.pt"
+    ksw_fs: "model_checkpoints/model2/model2_fs_ksw.pt"
+    B0_B1: "model_checkpoints/model2/model2_b.pt"
+
+  dataset_path: "phantoms_clean/model2/scan12"
+
+# Model Architecture Parameters
+model_parameters:
+  image_size: 80
+  patch_size: 5
+  sequence_len: 6
+  dropout: 0.0
+  num_transformer_layers: 3
+  num_heads: 4
+  embedding_dim: 768
+  mlp_size: 3072
+
+# Data Scaling
+scaling:
+  scale_max_params: 4
+  scale_max_data: 1
+
+# Device Settings
+device: "cuda"  # Options: "cuda", "cpu"
+num_workers: 2
+
+# Output Options
+output:
+  create_images: true
+  images_path: "predictions_model"
+  images_option: "sequence"  # Options: "sequence", "all"
+
+# Metrics Calculation
+metrics:
+  calculate: true
+  calculate_mto4m: true  # MT offset to 4MHz analysis
+
+# Phantom Parameters (for validation)
+phantom_parameters:
+  parameter_map:
+    - [2, 2, 1.7, 1.5, 1.2, 1.2, 3, 0.5, 3, 1, 2.2, 3.2, 1.5, 0.7, 1.5, 2.2, 2.5, 1.2, 3, 0.2, 1.5, 2.5, 0.7, 4, 3.2, 3.5, 1.5, 2.7, 0.7, 0.5]
+    - [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+
+# Model 2 Scaling Options (per parameter type)
+model2_scaling_options:
+  pH_mM:
+    scale_data: 1
+    scale_param: 4
+  T1_T2:
+    scale_data: 1
+    scale_param: 4
+  ksw_fs:
+    scale_data: 1
+    scale_param: 4
+  B0_B1:
+    scale_data: 1
+    scale_param: 4
+
+# Backward compatibility - these will be populated by the script
+# (Your functions might expect these keys directly in config)
+create_images: true  # Same as output.create_images
+images_path: "predictions_model"
+images_option: "sequence"
+parameter_map:
+  - [2, 2, 1.7, 1.5, 1.2, 1.2, 3, 0.5, 3, 1, 2.2, 3.2, 1.5, 0.7, 1.5, 2.2, 2.5, 1.2, 3, 0.2, 1.5, 2.5, 0.7, 4, 3.2, 3.5, 1.5, 2.7, 0.7, 0.5]
+  - [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]

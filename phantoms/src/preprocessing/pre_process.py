@@ -1,80 +1,20 @@
 from Dinor_revision.git_tbmf.phantoms.src.utils.utils import *
-import os
 import numpy as np
 import glob
 
+import yaml
+import os
 
-config = {
-    "input_path" : "/home/sahar/Models/Dinor_revision/personal_git/phantoms", # Change if needed
-    "input_name" : "input.mat",
-    "phantom_name" : "scan12",
-    "labels_name" : "labels.mat",
-    "need_output_file" : False,
-    # Black removal
-    "min_keep_slices" : 5,
-    "threshold" : 30,
-    "axis" : 1, # axial
+# Load configuration
+config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+                          'configs', 'preprocess_config.yaml')
+with open(config_path, 'r') as f:
+    config = yaml.safe_load(f)
 
-    "output_folder" : "/home/sahar/Models/Dinor_revision/personal_git/phantoms/phantoms_clean", # Change if needed
-    # Segment phantom circle
-    "sam_checkpoint": "/home/sahar/Models/Dinor_revision/personal_git/phantoms/sam_checkpoints/sam_vit_h_4b8939.pth",
-    "wanted_slices" : [[slice(41, 46), slice(62, 69)]], # Valid only for phantom 12
-    # 'wanted_slices': [[slice(47, 52), slice(70, 77)]],
-    "area_threshold_low": 2250,     # minimum and maximum areas of the phantom mask to be found
-    "area_threshold_high" : 3000,
-    # Vial parameters
-    "vial_area_threshold_low": 22,
-    "vial_area_threshold_high": 79,
-    "default_num_vials": 6,
-    "tube_radius": 5,
+print(f"Loaded config from: {config_path}")
 
-    # Cropping parameters
-    "target_height": 80,  # Target H dimension
-    "target_width": 80,  # Target W dimension
+config['parameter_map'] = np.array(config['parameter_map'])
 
-    # Skip processing flags
-    "skip_segmentation": True,  # Set to True to load existing segmentation checkpoints
-    "skip_cropping": True,  # Set to True to load existing cropping checkpoints
-    "skip_labels_processing": True,  # Set to True to load existing labels checkpoints
-
-    # Paths for loading existing checkpoints (only needed if skip flags are True)
-    "existing_results_path": "/home/sahar/Models/Dinor_revision/personal_git/phantoms/phantoms_clean",
-    # Path where existing checkpoints are stored
-
-    # fit data to model:
-    "needs_preparation_for_tbmf": True, # Change to false if you only want segmentation
-    "parameter_map" : np.array(
-                [[2, 2, 1.7, 1.5, 1.2, 1.2, 3, 0.5, 3, 1, 2.2, 3.2, 1.5, 0.7, 1.5, 2.2, 2.5, 1.2, 3, 0.2,
-                  1.5, 2.5, 0.7, 4, 3.2, 3.5, 1.5, 2.7, 0.7, 0.5],
-                 [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-                  3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]]),
-    "need_augmentation" : False,
-    "views" : ["axial"], # Add sagittal and coronal if needed
-
-    "model_type" : "model2", # Options : model1, model2
-    "segmented": False,
-    "window_size": 6,
-    "prediction_offset": 6,
-    "embedding_window": 12,
-
-    # Model 2 labels creations:
-    "generate_segmented_labels": True,  # Set to False if you don't want to generate them
-
-    "default_parameter_values": {
-        "ph_values": [5.5, 6, 5.0, 4.0, 5.0, 5.0],
-        "mM_values": [50, 50, 50, 50, 25, 100],
-        "T1_values": [2865, 3160, 2950, 3087, 3308, 2890],
-        "T2_values": [663, 856, 639, 559, 478, 999],
-        "ksw_values": [441, 437, 670, 384, 1066, 204],
-        "fs_values": [50, 25, 50, 100, 50, 50]
-    },
-    "model2_type": {1 : ['pH', 'mM'],
-                    2 : ['T1', 'T2'],
-                    3: ['ksw', 'fs'],
-                    4: ['B0', 'B1']
-                    },
-    "B_maps_path": "/home/sahar/Models/Dinor_revision/personal_git/phantoms/scan12/B_maps.h5"
-}
 
 # Initialize both segmenter and labels processor
 segmenter = PhantomSegmenter(config)
@@ -90,14 +30,13 @@ if config["phantom_name"] is None:
     input_paths = glob.glob(os.path.join(config["input_path"], "*/input*.mat"))
 else:
     input_paths = glob.glob(os.path.join(config["input_path"], config["phantom_name"], "input*.mat"))
-
+print(f"Found {len(input_paths)} input files to process.")
 for input_path in input_paths:
     if config["phantom_name"] is None:
         config["phantom_name"] = input_path.split("/")[-2]
     # Find corresponding label file
     input_dir = os.path.dirname(input_path)
     label_path = os.path.join(input_dir, config["labels_name"])
-
     if not os.path.exists(label_path):
         print(f"Warning: No label file found at {label_path}, processing input only...")
         label_path = None

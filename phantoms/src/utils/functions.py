@@ -1,4 +1,4 @@
-from transformer_architecture_prod import Model
+from Dinor_revision.git_tbmf.phantoms.src.models.transformer_architecture_prod import Model
 import torch
 from torch.utils.data import Dataset
 import h5py

@@ -1,0 +1,83 @@
+# Preprocessing Configuration for MRI Phantom Data
+
+# Input/Output Paths
+input_path: "/home/sahar/Models/Dinor_revision/git_tbmf/phantoms"
+input_name: "input.mat"
+phantom_name: "scan12"  # Set to null to process all phantoms
+labels_name: "labels.mat"
+output_folder: "/home/sahar/Models/Dinor_revision/git_tbmf/phantoms/phantoms_clean"
+
+# SAM Segmentation
+sam_checkpoint: "/home/sahar/Models/Dinor_revision/git_tbmf/sam_checkpoints/sam_vit_h_4b8939.pth"
+
+# Black Slice Removal
+min_keep_slices: 5
+threshold: 30
+axis: 1  # 0=sagittal, 1=axial, 2=coronal
+
+# Phantom Segmentation
+wanted_slices:  # Valid only for specific phantoms
+  - [41, 46, 62, 69]  # [slice_start1, slice_end1, slice_start2, slice_end2]
+
+area_threshold_low: 2250
+area_threshold_high: 3000
+
+# Vial Segmentation
+vial_area_threshold_low: 22
+vial_area_threshold_high: 79
+default_num_vials: 6
+tube_radius: 5
+
+# Cropping Parameters
+target_height: 80
+target_width: 80
+
+# Processing Flags
+skip_segmentation: false  # Set true to load existing results
+skip_cropping: false
+skip_labels_processing: false
+existing_results_path: "/home/sahar/Models/Dinor_revision/git_tbmf/phantoms/phantoms_clean"
+
+# Model Preparation
+needs_preparation_for_tbmf: true
+model_type: "model1"  # Options: "model1", "model2"
+segmented: false  # For model1 only
+
+# Model 1 Parameters
+window_size: 6
+prediction_offset: 6
+embedding_window: 12
+
+# Model 2 Parameters
+generate_segmented_labels: true
+
+# Default Parameter Values for Vials
+default_parameter_values:
+  ph_values: [5.5, 6.0, 5.0, 4.0, 5.0, 5.0]
+  mM_values: [50, 50, 50, 50, 25, 100]
+  T1_values: [2865, 3160, 2950, 3087, 3308, 2890]
+  T2_values: [663, 856, 639, 559, 478, 999]
+  ksw_values: [441, 437, 670, 384, 1066, 204]
+  fs_values: [50, 25, 50, 100, 50, 50]
+
+# Model 2 Parameter Type Mapping
+model2_type:
+  1: ['pH', 'mM']
+  2: ['T1', 'T2']
+  3: ['ksw', 'fs']
+  4: ['B0', 'B1']
+
+# B Maps Path (for B0/B1 parameters)
+B_maps_path: "/home/sahar/Models/Dinor_revision/git_tbmf/phantoms/scan12/B_maps.h5"
+
+# Parameter Map (for TBMF)
+parameter_map:
+  - [2, 2, 1.7, 1.5, 1.2, 1.2, 3, 0.5, 3, 1, 2.2, 3.2, 1.5, 0.7, 1.5, 2.2, 2.5, 1.2, 3, 0.2, 1.5, 2.5, 0.7, 4, 3.2, 3.5, 1.5, 2.7, 0.7, 0.5]
+  - [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+
+# Augmentation
+need_augmentation: false
+views: ["axial"]  # Options: "axial", "sagittal", "coronal"
+
+# Output Options
+need_output_file: false
