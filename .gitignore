@@ -1,0 +1,22 @@
+# Data files
+*.h5
+*.mat
+*.pth
+*.png
+
+# Large data directories
+phantoms/phantoms_clean/
+phantoms/predictions_*/
+phantoms/sam_checkpoints/
+phantoms/scan12/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# Virtual environment
+myfirstenv/
+venv/
+env/
