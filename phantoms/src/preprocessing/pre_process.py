@@ -1,4 +1,4 @@
-from utils import *
+from Dinor_revision.git_tbmf.phantoms.src.utils.utils import *
 import os
 import numpy as np
 import glob

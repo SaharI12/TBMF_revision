@@ -1,8 +1,9 @@
 import os
 import glob
-from functions import *
 import torch
 from torch.utils.data import Dataset, DataLoader
+
+from Dinor_revision.git_tbmf.phantoms.src.utils.functions import *
 
 
 config = {
