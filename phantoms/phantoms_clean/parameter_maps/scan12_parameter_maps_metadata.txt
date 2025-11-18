@@ -1,0 +1,9 @@
+Parameter Maps Generation Metadata
+========================================
+Phantom Name: scan12
+Number of Vials: 6
+pH values: [5.0, 5.0, 5.5, 5.0, 6.0, 4.0]
+mM values: [50, 25, 50, 100, 50, 50]
+T1 values: [2865, 3160, 2950, 3087, 3308, 2890]
+T2 values: [663, 856, 639, 559, 478, 999]
+Vial area thresholds: 22 - 79

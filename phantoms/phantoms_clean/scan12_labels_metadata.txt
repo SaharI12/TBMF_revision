@@ -1,0 +1,10 @@
+Labels Processing Metadata
+========================================
+Phantom Name: scan12
+Label Keys: ['AL_fB_Im', 'AL_kBA_Im']
+Original Label Shapes:
+  AL_fB_Im: (100, 116, 116)
+  AL_kBA_Im: (100, 116, 116)
+Processed Labels Shape: (2, 12, 100, 116)
+Phantom Masked Labels Shape: (2, 12, 100, 116)
+Vial Masked Labels Shape: (2, 12, 100, 116)

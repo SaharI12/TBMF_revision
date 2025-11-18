@@ -1,0 +1,7 @@
+Phantom Name: scan12
+Number of Vials: 6
+Wanted Slices: [[slice(41, 46, None), slice(62, 69, None)]]
+Phantom Shape: (30, 12, 100, 116)
+Phantom Masks Shape: (12, 100, 116)
+Vial Masks Shape: (12, 100, 116)
+Vial Images Shape: (30, 12, 100, 116)

@@ -1,0 +1,11 @@
+Cropped Phantom Processing Metadata
+========================================
+Phantom Name: scan12
+Target Height: 80
+Target Width: 80
+Target Shapes: {'phantom_data': (30, 12, 80, 80), 'labels': (12, 80, 80), 'masks': (12, 80, 80), 'vial_images': (30, 12, 80, 80)}
+Cropped Phantom Shape: (30, 12, 80, 80)
+Cropped Phantom Masks Shape: (12, 80, 80)
+Cropped Vial Masks Shape: (12, 80, 80)
+Cropped Vial Images Shape: (30, 12, 80, 80)
+Crop Info: {'starts': [0, 0, 3, 15], 'ends': [30, 12, 83, 95]}
