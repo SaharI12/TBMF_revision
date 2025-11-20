@@ -1,7 +1,7 @@
 from transformer_architecture_prod import *
 from torchmetrics.image import StructuralSimilarityIndexMeasure
 from torchmetrics.image import PeakSignalNoiseRatio
-from functions_prod import *
+from functions import *
 from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.colors as mcolors
 from matplotlib import cm
@@ -12,6 +12,8 @@ import torch
 from tqdm import tqdm
 import pandas as pd
 import seaborn as sns
+import glob
+from config_loader import load_config
 
 CHANNEL_RANGES = {
     0: 100.0,   # Kssw
@@ -703,25 +705,28 @@ def create_combined_metrics_boxplots(metrics_df, save_dir):
         plt.close()
 
 def main(args):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = args.get("device", torch.device("cuda" if torch.cuda.is_available() else "cpu"))
     print(f"Using device: {device}")
     start_time = time.time()
 
-    save_path = '/home/sahar/Models/Dinor_revision/new_phantom/dinor_train/code_addition/human/Results_human/GM/axial'
+    save_path = args.get("out_dir", "./predictions")
     os.makedirs(save_path, exist_ok=True)
     image_save_path = os.path.join(save_path, "images")
     os.makedirs(image_save_path, exist_ok=True)
 
-    scale_data = 4578.9688
-    scale_params = 13.9984
+    scale_data = args.get("scale_data", 4578.9688)
+    scale_params = args.get("scale_params", 13.9984)
 
-    # Collect paths
-    data_paths = glob.glob(r'/home/sahar/Models/Dinor_revision/new_phantom/dinor_train/code_addition/human/subjects_model_2/*/*/axial/*/dataset/*.mat')
+    # Collect paths from configured data directory
+    data_dir = args.get("data_dir", "./data/axial")
+    data_paths = glob.glob(os.path.join(data_dir, "*/dataset/*.mat"))
     data_paths = sorted(data_paths)
-    param_paths = glob.glob(r'/home/sahar/Models/Dinor_revision/new_phantom/dinor_train/code_addition/human/subjects_model_2/*/*/axial/*/params/*.mat')
+    param_paths = glob.glob(os.path.join(data_dir, "*/params/*.mat"))
     param_paths = sorted(param_paths)
-    label_paths = glob.glob(r'/home/sahar/Models/Dinor_revision/new_phantom/dinor_train/code_addition/human/subjects_model_2y/*/*/axial/*/labels/*.mat')
+    label_paths = glob.glob(os.path.join(data_dir, "*/labels/*.mat"))
     label_paths = sorted(label_paths)
+
+    print(f" Number of samples found: {len(data_paths)}")
 
     # Create the dataset
     dataset = TryDataset_v2(data_dir=data_paths,
@@ -850,22 +855,30 @@ def main(args):
     print(f"Total processing time: {time.time() - start_time:.2f} seconds")
 
 if __name__ == '__main__':
-    arguments = dict()
-    arguments["device"] = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    # Load configuration from config.yaml
+    try:
+        config_loader = load_config('config.yaml')
+    except FileNotFoundError as e:
+        print(f"Error: {e}")
+        exit(1)
 
-    arguments["image_size"] = 144
-    arguments["sequence_len"] = 6
-    arguments["patch_size"] = 9
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
-    arguments["embedding_dim"] = 768
-
-    arguments["dropout"] = 0
-    arguments["mlp_size"] = 3072
-    arguments["num_transformer_layers"] = 3
-    arguments["num_heads"] = 4
-
-    arguments["data_dir"] = "/home/sahar/Models/Dinor_revision/new_phantom/dinor_train/code_addition/human/subjects_model_2"
-    arguments[
-        "new_model_weight_path"] = "/home/sahar/tbmf/tbmf/final_scripts_for_publition_lab_git/model2_weights/with_pretrained_weights/checkpoint_epoch_348.pt"
+    arguments = {
+        "device": device,
+        "image_size": config_loader.get('model.img_size', 144),
+        "sequence_len": config_loader.get('model.in_channels', 6),
+        "patch_size": config_loader.get('model.patch_size', 9),
+        "embedding_dim": config_loader.get('model.embedding_dim', 768),
+        "dropout": config_loader.get('model.dropout', 0),
+        "mlp_size": config_loader.get('model.mlp_size', 3072),
+        "num_transformer_layers": config_loader.get('model.num_transformer_layers', 3),
+        "num_heads": config_loader.get('model.num_heads', 4),
+        "data_dir": config_loader.get('data.data_dir', './data/axial'),
+        "new_model_weight_path": config_loader.get('model.model2_path', 'checkpoints/model2.pt'),
+        "out_dir": config_loader.get('analysis.predictions_dir', './predictions'),
+        "scale_data": config_loader.get('normalization.scale_data', 4578.9688),
+        "scale_params": config_loader.get('normalization.scale_params', 13.9984),
+    }
 
     main(arguments)

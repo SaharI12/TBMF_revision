@@ -1,0 +1,87 @@
+# Configuration file for TBMF Project
+# Copy this file to config.yaml and update with your local paths
+
+# Data Configuration
+data:
+  root_dir: "./data"  # Path to root data directory
+  data_dir: "./data/axial"  # Path to axial MRI data
+  method_comparison_dir: "./data/Method_com"  # Path to method comparison data
+
+# Model Configuration
+model:
+  checkpoint_dir: "./checkpoints"  # Directory to save/load model checkpoints
+  model1_path: "./checkpoints/model1.pt"  # Path to first model
+  model2_path: "./checkpoints/model2.pt"  # Path to second model
+
+  # Architecture parameters
+  in_channels: 6  # Number of input channels
+  out_channels: 6  # Number of output channels
+  img_size: 144  # Image size (height/width)
+  patch_size: 9  # Patch size for ViT
+  embedding_dim: 768  # Embedding dimension
+  num_heads: 4  # Number of attention heads
+  depth: 3  # Number of transformer layers
+
+# Training Configuration
+training:
+  batch_size: 16
+  learning_rate: 0.00002
+  num_epochs: 100
+  optimizer: "adam"  # Options: adam, sgd
+  loss_function: "l1"  # Options: mse, l1, huber
+  device: "cuda"  # Options: cuda, cpu
+
+# Data Normalization
+normalization:
+  scale_data: 4578.9688  # Scaling factor for input data
+  scale_params: 13.9984  # Scaling factor for output parameters
+
+
+  # ICC (Intraclass Correlation) analysis
+  icc:
+    confidence_level: 0.95
+    icc_type: "ICC(3,1)"  # Two-way mixed, absolute agreement, single measurement
+
+# Analysis Configuration
+analysis:
+  predictions_dir: "./predictions"  # Directory to save predictions
+
+  # SHAP analysis
+  shap:
+    num_background_samples: 1000  # Background samples for SHAP
+    num_test_samples: 20  # Test samples for SHAP
+
+  # Attention analysis
+  attention:
+    extract_layers: [0, 1, 2]  # Which layers to extract attention from
+
+  # Noise robustness testing
+  noise:
+    snr_db_values: [10, 15, 20, 25, 30]  # SNR values to test (dB)
+    num_iterations: 5  # Number of iterations for averaging
+
+# Visualization Configuration
+visualization:
+  save_plots: true
+  plot_format: "png"  # Options: png, pdf, jpg
+  dpi: 300
+
+  # Color maps
+  colormap: "viridis"
+
+  # Figure sizes
+  figure_size:
+    width: 12
+    height: 8
+
+# Logging Configuration
+logging:
+  log_dir: "./logs"
+  log_level: "INFO"  # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  save_logs: true
+
+# Hardware Configuration
+hardware:
+  device: "cuda"  # Options: cuda, cpu
+  num_workers: 4  # Number of workers for data loading
+  pin_memory: true  # Pin memory for faster data transfer

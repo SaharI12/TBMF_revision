@@ -1,7 +1,7 @@
 import scipy.io as sio
 
 from transformer_architecture_prod import *
-from functions_prod import *
+from functions import *
 import matplotlib.colors as mcolors
 from matplotlib import cm
 import matplotlib.pyplot as plt
@@ -16,6 +16,7 @@ from torch.utils.data import Dataset, DataLoader
 import warnings
 import numpy as np
 import h5py
+from config_loader import load_config
 
 warnings.filterwarnings('ignore')
 
@@ -715,7 +716,7 @@ def main(args):
     scale_params = 13.9984
 
     # Load data paths
-    base_path = r"data"
+    base_path = r"data/axial"
     data_paths = sorted(glob.glob(os.path.join(base_path, r'*/dataset/*.h5')))
     param_paths = sorted(glob.glob(os.path.join(base_path, r'*/params/*.h5')))
     label_paths = sorted(glob.glob(os.path.join(base_path, r'*/labels/*.h5')))
@@ -782,17 +783,26 @@ def main(args):
 
 
 if __name__ == '__main__':
+    # Load configuration from config.yaml
+    try:
+        config_loader = load_config('config.yaml')
+    except FileNotFoundError as e:
+        print(f"Error: {e}")
+        exit(1)
+
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+
     arguments = {
-        "device": torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"),
-        "image_size": 144,
-        "sequence_len": 6,
-        "patch_size": 9,
-        "embedding_dim": 768,
-        "dropout": 0,
-        "mlp_size": 3072,
-        "num_transformer_layers": 3,
-        "num_heads": 4,
-        "new_model_weight_path": 'checkpoints/model2.pt'
+        "device": device,
+        "image_size": config_loader.get('model.img_size', 144),
+        "sequence_len": config_loader.get('model.in_channels', 6),
+        "patch_size": config_loader.get('model.patch_size', 9),
+        "embedding_dim": config_loader.get('model.embedding_dim', 768),
+        "dropout": config_loader.get('model.dropout', 0),
+        "mlp_size": config_loader.get('model.mlp_size', 3072),
+        "num_transformer_layers": config_loader.get('model.num_transformer_layers', 3),
+        "num_heads": config_loader.get('model.num_heads', 4),
+        "new_model_weight_path": config_loader.get('model.model2_path', 'checkpoints/model2.pt')
     }
 
     main(arguments)

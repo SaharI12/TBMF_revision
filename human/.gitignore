@@ -1,0 +1,90 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-workspace
+*.sublime-project
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints
+
+# PyCharm
+.pytest_cache/
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+
+# Large data and model files (NOT for public repo)
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.ckpt
+
+# Data directories (sensitive medical data - DO NOT COMMIT)
+data/
+checkpoints/
+predictions/
+
+# Logs
+*.log
+logs/
+
+# Outputs
+outputs/
+results/
+*.csv
+*.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# Sensitive data (if any)
+.env
+secrets.json
+config_local.py
