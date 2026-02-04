@@ -10,13 +10,13 @@ import os
 from typing import Dict, List, Tuple
 import scipy.io as sio
 from tqdm import tqdm
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
 import pandas as pd
 import glob
 import h5py
 # Import custom modules
 from transformer_architecture_prod import *
-from functions_prod import *
+from functions import *
 from images_and_box_plot_model_2 import plot_true_and_pred_sequences
 
 
@@ -1041,7 +1041,7 @@ def main_attention_analysis():
         "mlp_size": 3072,
         "num_transformer_layers": 3,
         "num_heads": 4,
-        "data_dir": "data",
+        "data_dir": "/home/sahar/Models/Dinor_revision/git_tbmf/human/data/axial",
         "new_model_weight_path": 'checkpoints/model2.pt'
     }
 
@@ -1060,13 +1060,13 @@ def main_attention_analysis():
 
     # Load data
     data_paths = sorted(
-        glob.glob(os.path.join(args["data_dir"], "*" , 'dataset', '*.h5'))
+        glob.glob(os.path.join(args["data_dir"], "55" , 'dataset', '*.h5'))
     )
     param_paths = sorted(
-        glob.glob(os.path.join(args["data_dir"],  "*" , 'params', '*.h5'))
+        glob.glob(os.path.join(args["data_dir"],  "55" , 'params', '*.h5'))
     )
     label_paths = sorted(
-        glob.glob(os.path.join(args["data_dir"],  "*" , 'labels', '*.h5'))
+        glob.glob(os.path.join(args["data_dir"],  "55" , 'labels', '*.h5'))
     )
 
     print(f"Found {len(data_paths)} data files")
