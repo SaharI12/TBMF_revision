@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.io as sio
+import h5py
 from transformer_architecture_prod import create_model_v0
 from glob import glob
 import os
@@ -24,9 +25,9 @@ class TryDataset_v2(Dataset):
         return len(self.data_paths)
 
     def __getitem__(self, index: int):
-        dataset_idx = sio.loadmat(self.data_paths[index])['res'] / self.scale_data
-        params_idx = sio.loadmat(self.param_paths[index])['res'] / self.scale_params
-        labels = sio.loadmat(self.label_paths[index])['res']
+        dataset_idx = h5py.File(self.data_paths[index])['res'][:] / self.scale_data
+        params_idx = h5py.File(self.param_paths[index])['res'][:] / self.scale_params
+        labels = h5py.File(self.label_paths[index])['res'][:]
         labels[0, :, :] = labels[0, :, :] / 100  # KSSW
         labels[1, :, :] = labels[1, :, :] / 27.27  # MT
         labels[2, :, :] = (labels[2, :, :] + 1) / (1.7 + 1)  # B0
@@ -78,19 +79,19 @@ def main(args):
     for scan in os.listdir(os.path.join(args["data_dir"], "axial")):
         for i in range(8):  # Limit for RAM saving/debug
             # Training data
-            for j in range(17):
-                data_glob = glob(os.path.join(args["data_dir"],scan, 'dataset', f'image_{j+1}.mat'))
-                param_glob = glob(os.path.join(args["data_dir"] , scan , 'params', f'image_{j+1}.mat'))
-                label_glob = glob(os.path.join(args["data_dir"] , scan, 'labels', f'image_{j+1}.mat'))
+            for j in range(1, 18):  # Images 1-17
+                data_glob = glob(os.path.join(args["data_dir"], "axial", scan, 'dataset', f'slice_{scan}_image_{j}.h5'))
+                param_glob = glob(os.path.join(args["data_dir"], "axial", scan, 'params', f'slice_{scan}_image_{j}.h5'))
+                label_glob = glob(os.path.join(args["data_dir"], "axial", scan, 'labels', f'slice_{scan}_image_{j}.h5'))
                 data_paths.extend(data_glob)
                 param_paths.extend(param_glob)
                 label_paths.extend(label_glob)
             # Test data
         for i in range(20):
             for j in range(1):
-                data_test = glob(os.path.join(args["data_dir"], scan,   'dataset', f'image_{0}.mat'))
-                param_test = glob(os.path.join(args["data_dir"], scan,  'params', f'image_{0}.mat'))
-                label_test = glob(os.path.join(args["data_dir"],scan,  'labels', f'image_{0}.mat'))
+                data_test = glob(os.path.join(args["data_dir"], "axial", scan, 'dataset', f'slice_{scan}_image_0.h5'))
+                param_test = glob(os.path.join(args["data_dir"], "axial", scan, 'params', f'slice_{scan}_image_0.h5'))
+                label_test = glob(os.path.join(args["data_dir"], "axial", scan, 'labels', f'slice_{scan}_image_0.h5'))
                 data_tests.extend(data_test)
                 param_tests.extend(param_test)
                 label_tests.extend(label_test)
