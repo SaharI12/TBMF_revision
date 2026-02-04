@@ -123,7 +123,7 @@ def main(args):
     for batch, (X, p, y) in enumerate(tqdm.tqdm(test_loader, desc="Loading background data for SHAP")):
         x_list.append(X)
         p_list.append(p)
-        if batch >= 1000:
+        if batch >= 50:
             break
     x_all = torch.cat(x_list, dim=0).to(device)
     p_all = torch.cat(p_list, dim=0).to(device)
@@ -134,7 +134,7 @@ def main(args):
     for batch, (X, p, y) in enumerate(tqdm.tqdm(test_loader_2, desc="Loading test data for SHAP")):
         x_test.append(X)
         p_test.append(p)
-        if batch >= 20:
+        if batch >= 3:
             break
     x_all_test = torch.cat(x_test, dim=0).to(device)
     p_all_test = torch.cat(p_test, dim=0).to(device)
@@ -184,7 +184,7 @@ def main(args):
         torch.cuda.empty_cache()
 
         wrapped_model_channel = WrappedModel(model, output_mode='channel_mean', channel_idx=out_c).to(device)
-        explainer_channel = shap.GradientExplainer(wrapped_model_channel, background)
+        explainer_channel = shap.GradientExplainer(wrapped_model_channel, background, batch_size=10)
         shap_values_channel = explainer_channel.shap_values(test)
 
         print(f"DEBUG: SHAP values shape for channel {out_c}: {shap_values_channel[0].shape}, {shap_values_channel[1].shape}")
