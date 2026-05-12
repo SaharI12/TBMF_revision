@@ -1,6 +1,6 @@
 # Multi-Contrast Generation and Quantitative MRI using a Transformer-Based Framework with RF Excitation Embeddings
 
-[![Nature Communications](https://img.shields.io/badge/Published-Nature_Communications-blue)](https://www-nature-com.bengurionu.idm.oclc.org/articles/s42003-025-09371-3)
+[![Nature Communications](https://img.shields.io/badge/Published-Nature_Communications-blue)](https://www.nature.com/articles/s42003-025-09371-3)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## Overview
@@ -172,7 +172,7 @@ python src/inference/analysis.py
 
 Published in: *Nature Communications*
 
-**Link:** https://www-nature-com.bengurionu.idm.oclc.org/articles/s42003-025-09371-3
+**Link:**https://www.nature.com/articles/s42003-025-09371-3
 
 ## Official Implementation Repository
 
